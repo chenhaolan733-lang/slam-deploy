@@ -1,0 +1,6 @@
+# Deliberately non-operational public template.
+# Obtain the approved SDK configuration for the actual robot from its operator.
+# Save it as robot.yaml (gitignored). Never guess actuator tuning or calibration.
+robot: example-body
+serial: SET_LOCAL_ROBOT_SERIAL
+devices: {}

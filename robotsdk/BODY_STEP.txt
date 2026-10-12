@@ -1,0 +1,38 @@
+头颈 / 腰腿单轴角度脚本（kitt15-042）
+
+机器人宿主机运行，不用进入容器，不要先启动 ROS SDK 驱动。
+如有现有驱动占用，脚本拒绝运行，不会自动停止它。
+
+头颈预览：
+/home/nvidia/robotsdk/head-step.sh --joint 1 --target-deg 0 --speed-percent 5
+
+腰腿预览：
+/home/nvidia/robotsdk/waist-step.sh --joint 1 --target-deg 0 --speed-percent 5
+
+确认角度和现场安全后，在同一命令后加 --execute 才实际执行。
+不带 --execute：仅输出运动前角度和运动后目标角度两行，不使能、不运动。
+带 --execute：不需要输入确认文字；运行结束/异常时尝试停止、下使能、断开。
+无法保证断电、进程被 SIGKILL、总线中断时软件清理完成，现场需可用的急停。
+
+轴号从 1 开始，按输出列表顺序：
+head 1=neck_yaw（颈部旋转），2=head_pitch（头部俯仰）。
+waist 1=waist_yaw，2=waist_pitch_upper，3=waist_pitch_mid，4=waist_pitch_lower。
+腰腿四轴均属于 SDK 的 waist 组；不控制底盘行走。
+
+参数同 arm-step.sh，但头颈/腰腿没有 --arm 参数。
+--target-deg 10：绝对目标 10 度。
+--delta-deg -1：从当前角度减少 1 度。
+--toward-deg 0 --step-deg 1：每次朝 0 度靠近最多 1 度。
+上述三种角度模式只能选一种。
+--speed-percent 5：SDK 速度比例 5%，不是 5 度/秒；默认 5%。
+--accel-percent 1：SDK 加速度比例 1%；默认 1%。
+--timeout 120：等待运动反馈到达的秒数；默认 120。
+
+实际 SDK 限位在每次运行时读取；不移除硬件限位。
+未增加人为的 5 度位移限制或 5% 速度上限。
+单轴规划不提供整机避碰、重心或平衡保护；腰腿俯仰会改变整机姿态。
+下使能后的保持能力取决于电机及抱闸，不能把下使能等同于保持当前位置。
+脚本对所选关节组使能，不是只给选中的单个电机上电。
+
+实现：head_step.py / waist_step.py 调用 arm_step.py 的共享执行逻辑。
+验证：模拟测试 + 实际 SDK 离线参数测试 + 实机只读预览；未自动执行实机动作。

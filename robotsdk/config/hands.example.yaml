@@ -1,0 +1,21 @@
+# Example wiring only: verify actual CAN interfaces and device IDs before use.
+# Save locally as hands-042.yaml after approval. Set hand_step.py expected identities.
+# SDK 0.33.0 does not expose tactile data for this Advanced Touch device.
+robot: kitt15-042-hands
+devices:
+  left_hand:
+    profile: hand
+    driver: brainco
+    transport: can
+    port: can1
+    slave_id: 1
+    joints: 6
+    tactile: false
+  right_hand:
+    profile: hand
+    driver: brainco
+    transport: can
+    port: can3
+    slave_id: 2
+    joints: 6
+    tactile: false

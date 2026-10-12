@@ -1,0 +1,41 @@
+navmap deploy 修复（2026-10-12，已部署42机）
+
+容器终端：
+  source /vla_infer/customer_navigation/env.sh
+  navmap deploy --dry-run
+  navmap deploy
+
+前提：机器人停稳、驻车，建图已正常保存退出，旧定位/导航已停止。
+脚本不主动停服务，也不启动导航或下发运动；发现相关进程仍运行会拒绝部署。
+
+正式部署流程：
+1. 读取已选地图名，默认选 edited/ 下最近导出的 map.yaml，并检查尺寸、原点、分辨率。
+   没有修图导出时默认拒绝；只有显式 --original 才使用原始栅格。
+2. 调用 deb 的 filter_saved_pcd，0.05米滤波，生成 地图名_loc.pcd。
+   原始PCD保留不改；已有结果只在输入/输出哈希一致时复用。
+3. 备份加载配置和当前点位；由 deb 部署工具把整个旧 maps/e_42 目录移入
+   maps/backups/e_42_时间戳，再成对放入滤波点云和修好的栅格。
+4. 若当前加载的是已核实的 e_42 备份，不覆盖该备份；新地图仍部署到标准 e_42。
+5. 检查部署后的PCD/PGM哈希、YAML内容和旧地图备份，成功后更新实际加载路径。
+   配置仅修改map_pcd和map_yaml，不改标定、速度等参数；源码站点同步这两项。
+6. 新PCD与当前实际加载的PCD不同则备份并清空旧点位，防止沿用不同坐标系的目标。
+7. 打印旧地图、旧配置和点位的备份位置。不会自动启动导航，需重新定位、采点。
+
+备份位置（容器内）：
+旧标准地图：/kitt15_navi/src/slam/maps/backups/e_42_时间戳/
+配置及点位：/vla_infer/customer_navigation/data/deployment_backups/时间戳/
+额外点位备份：/vla_infer/customer_navigation/data/waypoint_backups/
+最近部署记录：/vla_infer/customer_navigation/data/last_deployment.json
+
+--dry-run 仅预览，不滤波、不换图、不改加载路径、不改点位。
+部署中断时不要直接启动导航，应先核对打印的配置/地图备份和当前路径。
+
+配套权限助手：
+/usr/local/sbin/navmap-activate-e42（root拥有，不可由nvidia修改）
+/etc/sudoers.d/navmap-e42（只放行助手的 --check/--apply 两个固定动作）
+仅允许更新已核实e_42站点的两个固定加载路径，不接受任意路径、命令，不重启服务。
+重建 infer 容器后需重新安装助手：在容器内用root执行 install-navmap-helper.sh。
+不提供任意sudo权限。当前镜像重建后这些容器内安装文件不会自动保留。
+
+本次脚本修复已备份：
+/vla_infer/customer_navigation/backup_navmap_20261012_XNoKmN/

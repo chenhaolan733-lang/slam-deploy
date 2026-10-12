@@ -1,0 +1,2 @@
+# Fixed root-owned helper, no arbitrary paths or commands.
+nvidia ALL=(root) NOPASSWD: /usr/local/sbin/navmap-activate-e42 --check, /usr/local/sbin/navmap-activate-e42 --apply

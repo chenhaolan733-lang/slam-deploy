@@ -1,0 +1,21 @@
+[Unit]
+Description=Read-only chassis battery monitor with cached voice warning
+Wants=network-online.target
+After=network-online.target sound.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=nvidia
+WorkingDirectory=/home/nvidia/robot_battery_monitor
+ExecStart=/usr/bin/python3 -u /home/nvidia/robot_battery_monitor/monitor.py --interval 30
+Restart=always
+RestartSec=5
+KillMode=control-group
+TimeoutStopSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
