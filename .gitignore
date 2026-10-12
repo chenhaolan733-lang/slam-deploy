@@ -28,13 +28,9 @@ keys/
 backup*/
 deployment_backups/
 waypoint_backups/
-hello_test_logs/
 *.pem
 *.key
 id_ed25519*
 id_rsa*
 *credentials*.json
 *private*.yaml
-robotsdk/config/robot.yaml
-robotsdk/config/hands-042.yaml
-robotsdk/config/*local*

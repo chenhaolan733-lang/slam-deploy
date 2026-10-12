@@ -1,1 +1,0 @@
-deb [arch=arm64 signed-by=/usr/share/keyrings/ros-snapshot-keyring.gpg check-valid-until=no] http://snapshots.ros.org/jazzy/2026-06-18/ubuntu noble main

@@ -1,8 +1,0 @@
-keys/
-.runtime/
-__pycache__/
-*.pyc
-*.pub
-*.wav
-*.log
-backup*/

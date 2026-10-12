@@ -53,4 +53,4 @@ RViz/noVNC 使用 ros-jazzy-e-slam-bringup >= 2.0.3 自带入口和资源，不�
 
 部署路径：宿主机 /home/nvidia/anyverse_vla_infer/customer_navigation
          容器内 /vla_infer/customer_navigation
-交付时包含本目录文件和配套 deb、业务环境；data/ 为客户生成数据，升级脚本时不能覆盖。
+本仓库仅提供配套脚本；deb 包和业务环境另行准备，不上传到本仓库。data/ 为客户生成数据，升级脚本时不能覆盖。
